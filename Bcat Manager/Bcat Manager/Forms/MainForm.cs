@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -77,6 +77,7 @@ namespace Bcat_Manager
                     SystemSounds.Asterisk.Play();
                     textBox_tid.Enabled = false;
                     textBox_pass.Enabled = false;
+                    button_select.Enabled = false;
                     button_getList.Text = "New";
                 }
                 catch (Exception ex)
@@ -90,6 +91,7 @@ namespace Bcat_Manager
                 tabControl1.SelectedIndex = 0;
                 textBox_tid.Enabled = true;
                 textBox_pass.Enabled = true;
+                button_select.Enabled = true;
                 button_getList.Text = "Get List";
             }
         }
@@ -262,94 +264,79 @@ namespace Bcat_Manager
         //download raw
         private void rawToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Thread t = new Thread(() =>
+            TreeNode sel = treeView1.SelectedNode;
+            string tid = textBox_tid.Text;
+            string pass = textBox_pass.Text;
+
+            switch (sel.Level)
             {
-                Invoke(new Action(() => {
-                    foreach (Control c in Controls)
-                        c.Enabled = false;
-                }));
-
-                TreeNode sel = null;
-                Invoke(new Action(() => sel = treeView1.SelectedNode));
-                switch (sel.Level)
-                {
-                    case 0: //root
-                        DownloadAll(false);
-                        break;
-                    case 1: //folder
-                        DownloadDir(false);
-                        break;
-                    case 2: //file
-                        DownloadFile(false);
-                        break;
-                }
-
-                SystemSounds.Asterisk.Play();
-
-                Invoke(new Action(() => {
-                    foreach (Control c in Controls)
-                        c.Enabled = true;
-                }));
-            });
-            t.IsBackground = true;
-            t.Start();
+                case 0: //root
+                    DownloadAll(false, tid, pass);
+                    break;
+                case 1: //folder
+                    DownloadDir(false, sel, tid, pass);
+                    break;
+                case 2: //file
+                    DownloadFile(false, sel, tid, pass);
+                    break;
+            }
         }
         //download and decrypt
         private void decryptedToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            
-            Thread t = new Thread(() =>
+            TreeNode sel = treeView1.SelectedNode;
+            string tid = textBox_tid.Text;
+            string pass = textBox_pass.Text;
+
+            switch (sel.Level)
             {
-                Invoke(new Action(() => {
-                    foreach (Control c in Controls)
-                        c.Enabled = false;
-                }));
-
-                TreeNode sel = null;
-                Invoke(new Action(() => sel = treeView1.SelectedNode));
-                switch (sel.Level)
-                {
-                    case 0: //root
-                        DownloadAll(true);
-                        break;
-                    case 1: //folder
-                        DownloadDir(true);
-                        break;
-                    case 2: //file
-                        DownloadFile(true);
-                        break;
-                }
-
-                SystemSounds.Asterisk.Play();
-
-                Invoke(new Action(() => {
-                    foreach (Control c in Controls)
-                        c.Enabled = true;
-                }));
-            });
-            
-            t.IsBackground = true;
-            t.Start();
+                case 0: //root
+                    DownloadAll(true, tid, pass);
+                    break;
+                case 1: //folder
+                    DownloadDir(true, sel, tid, pass);
+                    break;
+                case 2: //file
+                    DownloadFile(true, sel, tid, pass);
+                    break;
+            }
         }
 
-        private void DownloadFile(bool decrypt)
+        private void DownloadFile(bool decrypt, TreeNode node, string tid, string pass)
         {
-            var dir = DataList.directories[treeView1.SelectedNode.Parent.Index];
-            var file = dir.data_list[treeView1.SelectedNode.Index];
+            var dir = DataList.directories[node.Parent.Index];
+            var file = dir.data_list[node.Index];
 
             saveFileDialog1.FileName = file.filename;
             if (saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
-                byte[] data = (decrypt)
-                    ? BCAT.GetDecBcat(file.url, long.Parse(textBox_tid.Text, NumberStyles.HexNumber), textBox_pass.Text)
-                    : BCAT.GetRawBcat(file.url);
+                Thread t = new Thread(() =>
+                {
+                    Invoke(new Action(() => {
+                        foreach (Control c in Controls)
+                            c.Enabled = false;
+                    }));
 
-                File.WriteAllBytes(saveFileDialog1.FileName, data);
+                    byte[] data = (decrypt)
+                        ? BCAT.GetDecBcat(file.url, long.Parse(tid, NumberStyles.HexNumber), pass)
+                        : BCAT.GetRawBcat(file.url);
+
+                    File.WriteAllBytes(saveFileDialog1.FileName, data);
+
+                    Invoke(new Action(() => {
+                        foreach (Control c in Controls)
+                            c.Enabled = true;
+                    }));
+
+                    SystemSounds.Asterisk.Play();
+                });
+                t.IsBackground = true;
+                t.Start();
             }
         }
-        private void DownloadDir(bool decrypt)
+        private void DownloadDir(bool decrypt, TreeNode node, string tid, string pass)
         {
-            var dir = DataList.directories[treeView1.SelectedNode.Index];
+            var dir = DataList.directories[node.Index];
 
             FolderSelectDialog fbox = new FolderSelectDialog();
             if (fbox.ShowDialog() == DialogResult.OK)
@@ -359,18 +346,35 @@ namespace Bcat_Manager
                 //create folder if doesn't exist
                 if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
 
-                foreach (var file in dir.data_list)
+                Thread t = new Thread(() =>
                 {
-                    string filePath = dirPath + file.filename;
-                    byte[] data = (decrypt)
-                    ? BCAT.GetDecBcat(file.url, long.Parse(textBox_tid.Text, NumberStyles.HexNumber), textBox_pass.Text)
-                    : BCAT.GetRawBcat(file.url);
+                    Invoke(new Action(() => {
+                        foreach (Control c in Controls)
+                            c.Enabled = false;
+                    }));
 
-                    File.WriteAllBytes(filePath, data);
-                }
+                    foreach (var file in dir.data_list)
+                    {
+                        string filePath = dirPath + file.filename;
+                        byte[] data = (decrypt)
+                        ? BCAT.GetDecBcat(file.url, long.Parse(tid, NumberStyles.HexNumber), pass)
+                        : BCAT.GetRawBcat(file.url);
+
+                        File.WriteAllBytes(filePath, data);
+                    }
+
+                    Invoke(new Action(() => {
+                        foreach (Control c in Controls)
+                            c.Enabled = true;
+                    }));
+
+                    SystemSounds.Asterisk.Play();
+                });
+                t.IsBackground = true;
+                t.Start();
             }
         }
-        private void DownloadAll(bool decrypt)
+        private void DownloadAll(bool decrypt, string tid, string pass)
         {
             FolderSelectDialog fbox = new FolderSelectDialog();
             if (fbox.ShowDialog() == DialogResult.OK)
@@ -380,23 +384,40 @@ namespace Bcat_Manager
                 //create folder if doesn't exist
                 if (!Directory.Exists(rootPath)) Directory.CreateDirectory(rootPath);
 
-                foreach (var dir in DataList.directories)
+                Thread t = new Thread(() =>
                 {
-                    string dirPath = String.Format(@"{0}\{1}\", rootPath, dir.name);
+                    Invoke(new Action(() => {
+                        foreach (Control c in Controls)
+                            c.Enabled = false;
+                    }));
 
-                    //create folder if doesn't exist
-                    if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
-
-                    foreach (var file in dir.data_list)
+                    foreach (var dir in DataList.directories)
                     {
-                        string filePath = dirPath + file.filename;
-                        byte[] data = (decrypt)
-                            ? BCAT.GetDecBcat(file.url, long.Parse(textBox_tid.Text, NumberStyles.HexNumber), textBox_pass.Text)
-                            : BCAT.GetRawBcat(file.url);
+                        string dirPath = String.Format(@"{0}\{1}\", rootPath, dir.name);
 
-                        File.WriteAllBytes(filePath, data);
+                        //create folder if doesn't exist
+                        if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
+
+                        foreach (var file in dir.data_list)
+                        {
+                            string filePath = dirPath + file.filename;
+                            byte[] data = (decrypt)
+                                ? BCAT.GetDecBcat(file.url, long.Parse(tid, NumberStyles.HexNumber), pass)
+                                : BCAT.GetRawBcat(file.url);
+
+                            File.WriteAllBytes(filePath, data);
+                        }
                     }
-                }
+
+                    Invoke(new Action(() => {
+                        foreach (Control c in Controls)
+                            c.Enabled = true;
+                    }));
+
+                    SystemSounds.Asterisk.Play();
+                });
+                t.IsBackground = true;
+                t.Start();
             }
         }
 
