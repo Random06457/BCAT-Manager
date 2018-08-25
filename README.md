@@ -18,4 +18,4 @@ To get the passphrase from a title, please take a look [here](https://github.com
 
 ### Other
 Huge thanks to everyone who contribued to [SwitchBrew](http://switchbrew.org/index.php?title=Main_Page) for the amazing documentation<br><br>
-If you have any question/problem, please contact me on discord : random#4657
+If you have any question/problem, please contact me on discord : random#6457
