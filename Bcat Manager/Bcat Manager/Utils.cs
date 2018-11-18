@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -10,10 +12,39 @@ namespace Bcat_Manager
     public class Utils
     {
 
+        public static Bitmap GetBitmap(byte[] buffer)
+        {
+            //assuming buffer is in JPG format
+            using (MemoryStream ms = new MemoryStream(buffer))
+            {
+                return (Bitmap)Image.FromStream(ms);
+            }
+        }
+
+
+        public static bool IsValidDeviceID(string id)
+        {
+            return Regex.IsMatch(id, "^(XA(J|W)[0-9]{11})$");
+        }
+
+        public static bool IsValidSdkVersion(string version)
+        {
+
+            string[] splitted = version.Split('.');
+
+            if (splitted.Length != 4)
+                return false;
+
+            foreach (var s in splitted)
+                if (!byte.TryParse(s, out byte res))
+                    return false;
+
+            return true;
+        }
         //pass
         public static bool IsValidPassphrase(string pass)
         {
-            return Regex.IsMatch(pass, @"[0-9a-fA-F]{64}");
+            return Regex.IsMatch(pass, "^[0-9a-fA-F]{64}$");
         }
 
         //title id
@@ -27,7 +58,7 @@ namespace Bcat_Manager
         }
         public static bool IsValidTid(string tid)
         {
-            return Regex.IsMatch(tid, @"0100[0-9a-fA-F]{12}");
+            return Regex.IsMatch(tid, "^0100[0-9a-fA-F]{12}$");
         }
         public static bool IsValidTid(long tid)
         {

@@ -10,7 +10,7 @@ namespace Bcat_Manager
 {
     public class Updater
     {
-        public const string APP_VERSION = "1.0.1";
+        public const string APP_VERSION = "1.0.2";
         private const string LATEST_URL = "https://raw.githubusercontent.com/Random0666/Useless-stuff/master/BCAT-Manager/latest.txt";
 
         public static void GetUpdate()
@@ -28,7 +28,7 @@ namespace Bcat_Manager
                     form.ShowDialog();
                 }
             }
-            //probably no correction
+            //probably no connection
             catch { }
         }
     }

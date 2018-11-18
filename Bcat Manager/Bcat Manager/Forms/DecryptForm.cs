@@ -58,7 +58,7 @@ namespace Bcat_Manager
                     //disable contols
                     foreach (Control control in Controls) Invoke(new Action(() => control.Enabled = false));
 
-                    byte[] data = BCAT.DecryptBCAT(File.ReadAllBytes(textBox_path.Text), long.Parse(textBox_tid.Text, NumberStyles.HexNumber), textBox_pass.Text);
+                    byte[] data = BCAT.DecryptBCAT(File.ReadAllBytes(textBox_path.Text), ulong.Parse(textBox_tid.Text, NumberStyles.HexNumber), textBox_pass.Text);
 
                     File.WriteAllBytes(saveFileDialog1.FileName, data);
                     SystemSounds.Asterisk.Play();

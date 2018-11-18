@@ -8,6 +8,9 @@ namespace Bcat_Manager
 {
     static class Program
     {
+
+        public static BcatManagerConfig Config;
+
         /// <summary>
         /// Point d'entrée principal de l'application.
         /// </summary>
@@ -16,6 +19,9 @@ namespace Bcat_Manager
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
+            Config = new BcatManagerConfig();
+
             Application.Run(new Form1());
         }
     }

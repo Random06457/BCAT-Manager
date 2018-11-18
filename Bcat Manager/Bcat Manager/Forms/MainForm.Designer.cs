@@ -38,6 +38,8 @@
             this.decryptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.databaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.manageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.downloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.rawToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -92,8 +94,19 @@
             this.textBox_fileName = new System.Windows.Forms.TextBox();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.linkLabel_credits = new System.Windows.Forms.LinkLabel();
             this.linkLabel_infoPass = new System.Windows.Forms.LinkLabel();
+            this.tabControl2 = new System.Windows.Forms.TabControl();
+            this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.tabPage6 = new System.Windows.Forms.TabPage();
+            this.pictureBox_topicIcon = new System.Windows.Forms.PictureBox();
+            this.textBox_topicDesc = new System.Windows.Forms.TextBox();
+            this.button_chooseTopic = new System.Windows.Forms.Button();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.label_newsProg = new System.Windows.Forms.Label();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.button_clearNewsCache = new System.Windows.Forms.Button();
+            this.button_refreshNews = new System.Windows.Forms.Button();
+            this.imageList_news = new System.Windows.Forms.ImageList(this.components);
             this.menuStrip1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -107,16 +120,20 @@
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.value_fileSize)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.value_fileID)).BeginInit();
+            this.tabControl2.SuspendLayout();
+            this.tabPage5.SuspendLayout();
+            this.tabPage6.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_topicIcon)).BeginInit();
             this.SuspendLayout();
             // 
             // treeView1
             // 
             this.treeView1.ImageIndex = 0;
             this.treeView1.ImageList = this.imageList1;
-            this.treeView1.Location = new System.Drawing.Point(8, 207);
+            this.treeView1.Location = new System.Drawing.Point(46, 229);
             this.treeView1.Name = "treeView1";
             this.treeView1.SelectedImageIndex = 0;
-            this.treeView1.Size = new System.Drawing.Size(224, 239);
+            this.treeView1.Size = new System.Drawing.Size(283, 239);
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             this.treeView1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.treeView1_MouseClick);
@@ -135,7 +152,7 @@
             this.databaseToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(478, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(647, 24);
             this.menuStrip1.TabIndex = 1;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -165,17 +182,33 @@
             // databaseToolStripMenuItem
             // 
             this.databaseToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.manageToolStripMenuItem});
+            this.manageToolStripMenuItem,
+            this.optionsToolStripMenuItem,
+            this.aboutToolStripMenuItem});
             this.databaseToolStripMenuItem.Name = "databaseToolStripMenuItem";
-            this.databaseToolStripMenuItem.Size = new System.Drawing.Size(67, 20);
-            this.databaseToolStripMenuItem.Text = "Database";
+            this.databaseToolStripMenuItem.Size = new System.Drawing.Size(49, 20);
+            this.databaseToolStripMenuItem.Text = "Other";
             // 
             // manageToolStripMenuItem
             // 
             this.manageToolStripMenuItem.Name = "manageToolStripMenuItem";
-            this.manageToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
-            this.manageToolStripMenuItem.Text = "Manage";
+            this.manageToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
+            this.manageToolStripMenuItem.Text = "Manage Database";
             this.manageToolStripMenuItem.Click += new System.EventHandler(this.manageToolStripMenuItem_Click);
+            // 
+            // optionsToolStripMenuItem
+            // 
+            this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
+            this.optionsToolStripMenuItem.Text = "Settings";
+            this.optionsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
+            // 
+            // aboutToolStripMenuItem
+            // 
+            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
+            this.aboutToolStripMenuItem.Text = "About";
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
             // contextMenuStrip1
             // 
@@ -200,14 +233,14 @@
             // rawToolStripMenuItem
             // 
             this.rawToolStripMenuItem.Name = "rawToolStripMenuItem";
-            this.rawToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
+            this.rawToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.rawToolStripMenuItem.Text = "Raw";
             this.rawToolStripMenuItem.Click += new System.EventHandler(this.rawToolStripMenuItem_Click);
             // 
             // decryptedToolStripMenuItem
             // 
             this.decryptedToolStripMenuItem.Name = "decryptedToolStripMenuItem";
-            this.decryptedToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
+            this.decryptedToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.decryptedToolStripMenuItem.Text = "Decrypted";
             this.decryptedToolStripMenuItem.Click += new System.EventHandler(this.decryptedToolStripMenuItem_Click);
             // 
@@ -244,21 +277,22 @@
             // rawToolStripMenuItem1
             // 
             this.rawToolStripMenuItem1.Name = "rawToolStripMenuItem1";
-            this.rawToolStripMenuItem1.Size = new System.Drawing.Size(147, 22);
+            this.rawToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.rawToolStripMenuItem1.Text = "Raw MsgPack";
             this.rawToolStripMenuItem1.Click += new System.EventHandler(this.rawToolStripMenuItem1_Click);
             // 
             // encryptedToolStripMenuItem
             // 
             this.encryptedToolStripMenuItem.Name = "encryptedToolStripMenuItem";
-            this.encryptedToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.encryptedToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.encryptedToolStripMenuItem.Text = "Encrypted";
+            this.encryptedToolStripMenuItem.Visible = false;
             this.encryptedToolStripMenuItem.Click += new System.EventHandler(this.encryptedToolStripMenuItem_Click);
             // 
             // textBox_tid
             // 
             this.textBox_tid.BackColor = System.Drawing.Color.Red;
-            this.textBox_tid.Location = new System.Drawing.Point(141, 65);
+            this.textBox_tid.Location = new System.Drawing.Point(209, 70);
             this.textBox_tid.MaxLength = 16;
             this.textBox_tid.Name = "textBox_tid";
             this.textBox_tid.Size = new System.Drawing.Size(200, 20);
@@ -267,7 +301,7 @@
             // 
             // button_select
             // 
-            this.button_select.Location = new System.Drawing.Point(179, 27);
+            this.button_select.Location = new System.Drawing.Point(247, 32);
             this.button_select.Name = "button_select";
             this.button_select.Size = new System.Drawing.Size(124, 23);
             this.button_select.TabIndex = 3;
@@ -278,7 +312,7 @@
             // textBox_pass
             // 
             this.textBox_pass.BackColor = System.Drawing.Color.Red;
-            this.textBox_pass.Location = new System.Drawing.Point(141, 101);
+            this.textBox_pass.Location = new System.Drawing.Point(209, 106);
             this.textBox_pass.MaxLength = 64;
             this.textBox_pass.Multiline = true;
             this.textBox_pass.Name = "textBox_pass";
@@ -289,7 +323,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(138, 52);
+            this.label1.Location = new System.Drawing.Point(206, 57);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(41, 13);
             this.label1.TabIndex = 5;
@@ -298,7 +332,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(138, 88);
+            this.label2.Location = new System.Drawing.Point(206, 93);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(62, 13);
             this.label2.TabIndex = 6;
@@ -307,7 +341,7 @@
             // button_getList
             // 
             this.button_getList.Enabled = false;
-            this.button_getList.Location = new System.Drawing.Point(202, 161);
+            this.button_getList.Location = new System.Drawing.Point(270, 166);
             this.button_getList.Name = "button_getList";
             this.button_getList.Size = new System.Drawing.Size(75, 23);
             this.button_getList.TabIndex = 7;
@@ -322,10 +356,10 @@
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.ItemSize = new System.Drawing.Size(58, 21);
-            this.tabControl1.Location = new System.Drawing.Point(235, 179);
+            this.tabControl1.Location = new System.Drawing.Point(335, 206);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(236, 271);
+            this.tabControl1.Size = new System.Drawing.Size(234, 271);
             this.tabControl1.TabIndex = 8;
             // 
             // tabPage4
@@ -333,7 +367,7 @@
             this.tabPage4.Controls.Add(this.groupBox4);
             this.tabPage4.Location = new System.Drawing.Point(4, 25);
             this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Size = new System.Drawing.Size(228, 242);
+            this.tabPage4.Size = new System.Drawing.Size(226, 242);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "tabPage4";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -353,7 +387,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 25);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(228, 242);
+            this.tabPage1.Size = new System.Drawing.Size(226, 242);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "tabPage1";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -458,7 +492,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 25);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(228, 242);
+            this.tabPage2.Size = new System.Drawing.Size(226, 242);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "tabPage2";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -543,7 +577,7 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 25);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(228, 242);
+            this.tabPage3.Size = new System.Drawing.Size(226, 242);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "tabPage3";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -697,21 +731,10 @@
             // 
             this.saveFileDialog1.Filter = "All Files (*.*)|*.*";
             // 
-            // linkLabel_credits
-            // 
-            this.linkLabel_credits.AutoSize = true;
-            this.linkLabel_credits.Location = new System.Drawing.Point(426, 448);
-            this.linkLabel_credits.Name = "linkLabel_credits";
-            this.linkLabel_credits.Size = new System.Drawing.Size(35, 13);
-            this.linkLabel_credits.TabIndex = 9;
-            this.linkLabel_credits.TabStop = true;
-            this.linkLabel_credits.Text = "About";
-            this.linkLabel_credits.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel_credits_LinkClicked);
-            // 
             // linkLabel_infoPass
             // 
             this.linkLabel_infoPass.AutoSize = true;
-            this.linkLabel_infoPass.Location = new System.Drawing.Point(168, 139);
+            this.linkLabel_infoPass.Location = new System.Drawing.Point(236, 144);
             this.linkLabel_infoPass.Name = "linkLabel_infoPass";
             this.linkLabel_infoPass.Size = new System.Drawing.Size(143, 13);
             this.linkLabel_infoPass.TabIndex = 10;
@@ -719,21 +742,142 @@
             this.linkLabel_infoPass.Text = "How to get the passphrase ?";
             this.linkLabel_infoPass.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel_infoPass_LinkClicked);
             // 
+            // tabControl2
+            // 
+            this.tabControl2.Controls.Add(this.tabPage5);
+            this.tabControl2.Controls.Add(this.tabPage6);
+            this.tabControl2.Location = new System.Drawing.Point(12, 27);
+            this.tabControl2.Name = "tabControl2";
+            this.tabControl2.SelectedIndex = 0;
+            this.tabControl2.Size = new System.Drawing.Size(623, 509);
+            this.tabControl2.TabIndex = 11;
+            // 
+            // tabPage5
+            // 
+            this.tabPage5.Controls.Add(this.treeView1);
+            this.tabPage5.Controls.Add(this.tabControl1);
+            this.tabPage5.Controls.Add(this.linkLabel_infoPass);
+            this.tabPage5.Controls.Add(this.button_select);
+            this.tabPage5.Controls.Add(this.textBox_tid);
+            this.tabPage5.Controls.Add(this.button_getList);
+            this.tabPage5.Controls.Add(this.textBox_pass);
+            this.tabPage5.Controls.Add(this.label2);
+            this.tabPage5.Controls.Add(this.label1);
+            this.tabPage5.Location = new System.Drawing.Point(4, 22);
+            this.tabPage5.Name = "tabPage5";
+            this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage5.Size = new System.Drawing.Size(615, 483);
+            this.tabPage5.TabIndex = 0;
+            this.tabPage5.Text = "Game Data";
+            this.tabPage5.UseVisualStyleBackColor = true;
+            // 
+            // tabPage6
+            // 
+            this.tabPage6.Controls.Add(this.pictureBox_topicIcon);
+            this.tabPage6.Controls.Add(this.textBox_topicDesc);
+            this.tabPage6.Controls.Add(this.button_chooseTopic);
+            this.tabPage6.Controls.Add(this.flowLayoutPanel1);
+            this.tabPage6.Controls.Add(this.label_newsProg);
+            this.tabPage6.Controls.Add(this.progressBar1);
+            this.tabPage6.Controls.Add(this.button_clearNewsCache);
+            this.tabPage6.Controls.Add(this.button_refreshNews);
+            this.tabPage6.Location = new System.Drawing.Point(4, 22);
+            this.tabPage6.Name = "tabPage6";
+            this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage6.Size = new System.Drawing.Size(615, 483);
+            this.tabPage6.TabIndex = 1;
+            this.tabPage6.Text = "News";
+            this.tabPage6.UseVisualStyleBackColor = true;
+            // 
+            // pictureBox_topicIcon
+            // 
+            this.pictureBox_topicIcon.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pictureBox_topicIcon.Location = new System.Drawing.Point(26, 9);
+            this.pictureBox_topicIcon.Name = "pictureBox_topicIcon";
+            this.pictureBox_topicIcon.Size = new System.Drawing.Size(49, 49);
+            this.pictureBox_topicIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox_topicIcon.TabIndex = 10;
+            this.pictureBox_topicIcon.TabStop = false;
+            // 
+            // textBox_topicDesc
+            // 
+            this.textBox_topicDesc.Enabled = false;
+            this.textBox_topicDesc.Location = new System.Drawing.Point(81, 9);
+            this.textBox_topicDesc.Multiline = true;
+            this.textBox_topicDesc.Name = "textBox_topicDesc";
+            this.textBox_topicDesc.Size = new System.Drawing.Size(525, 49);
+            this.textBox_topicDesc.TabIndex = 9;
+            // 
+            // button_chooseTopic
+            // 
+            this.button_chooseTopic.Location = new System.Drawing.Point(8, 64);
+            this.button_chooseTopic.Name = "button_chooseTopic";
+            this.button_chooseTopic.Size = new System.Drawing.Size(87, 23);
+            this.button_chooseTopic.TabIndex = 8;
+            this.button_chooseTopic.Text = "Choose Topic";
+            this.button_chooseTopic.UseVisualStyleBackColor = true;
+            this.button_chooseTopic.Click += new System.EventHandler(this.button_chooseTopic_Click);
+            // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.AutoScroll = true;
+            this.flowLayoutPanel1.BackColor = System.Drawing.SystemColors.Control;
+            this.flowLayoutPanel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(8, 97);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(598, 339);
+            this.flowLayoutPanel1.TabIndex = 7;
+            // 
+            // label_newsProg
+            // 
+            this.label_newsProg.AutoSize = true;
+            this.label_newsProg.Location = new System.Drawing.Point(6, 449);
+            this.label_newsProg.Name = "label_newsProg";
+            this.label_newsProg.Size = new System.Drawing.Size(16, 13);
+            this.label_newsProg.TabIndex = 4;
+            this.label_newsProg.Text = "...";
+            this.label_newsProg.Visible = false;
+            // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(8, 465);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(598, 12);
+            this.progressBar1.TabIndex = 3;
+            this.progressBar1.Visible = false;
+            // 
+            // button_clearNewsCache
+            // 
+            this.button_clearNewsCache.Location = new System.Drawing.Point(310, 67);
+            this.button_clearNewsCache.Name = "button_clearNewsCache";
+            this.button_clearNewsCache.Size = new System.Drawing.Size(87, 23);
+            this.button_clearNewsCache.TabIndex = 2;
+            this.button_clearNewsCache.Text = "Clear Cache";
+            this.button_clearNewsCache.UseVisualStyleBackColor = true;
+            this.button_clearNewsCache.Click += new System.EventHandler(this.button_clearNewsCache_Click);
+            // 
+            // button_refreshNews
+            // 
+            this.button_refreshNews.Location = new System.Drawing.Point(217, 68);
+            this.button_refreshNews.Name = "button_refreshNews";
+            this.button_refreshNews.Size = new System.Drawing.Size(87, 23);
+            this.button_refreshNews.TabIndex = 1;
+            this.button_refreshNews.Text = "Refresh";
+            this.button_refreshNews.UseVisualStyleBackColor = true;
+            this.button_refreshNews.Click += new System.EventHandler(this.button_refreshNews_Click);
+            // 
+            // imageList_news
+            // 
+            this.imageList_news.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
+            this.imageList_news.ImageSize = new System.Drawing.Size(178, 100);
+            this.imageList_news.TransparentColor = System.Drawing.Color.Transparent;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(478, 465);
-            this.Controls.Add(this.linkLabel_infoPass);
-            this.Controls.Add(this.linkLabel_credits);
-            this.Controls.Add(this.tabControl1);
-            this.Controls.Add(this.button_getList);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.textBox_pass);
-            this.Controls.Add(this.button_select);
-            this.Controls.Add(this.textBox_tid);
-            this.Controls.Add(this.treeView1);
+            this.ClientSize = new System.Drawing.Size(647, 540);
+            this.Controls.Add(this.tabControl2);
             this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -758,6 +902,12 @@
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.value_fileSize)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.value_fileID)).EndInit();
+            this.tabControl2.ResumeLayout(false);
+            this.tabPage5.ResumeLayout(false);
+            this.tabPage5.PerformLayout();
+            this.tabPage6.ResumeLayout(false);
+            this.tabPage6.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_topicIcon)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -827,8 +977,21 @@
         private System.Windows.Forms.ToolStripMenuItem exportASToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem rawToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem encryptedToolStripMenuItem;
-        private System.Windows.Forms.LinkLabel linkLabel_credits;
         private System.Windows.Forms.LinkLabel linkLabel_infoPass;
+        private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
+        private System.Windows.Forms.TabControl tabControl2;
+        private System.Windows.Forms.TabPage tabPage5;
+        private System.Windows.Forms.TabPage tabPage6;
+        private System.Windows.Forms.Button button_refreshNews;
+        private System.Windows.Forms.Button button_clearNewsCache;
+        private System.Windows.Forms.Label label_newsProg;
+        private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.ImageList imageList_news;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.Button button_chooseTopic;
+        private System.Windows.Forms.PictureBox pictureBox_topicIcon;
+        private System.Windows.Forms.TextBox textBox_topicDesc;
     }
 }
 

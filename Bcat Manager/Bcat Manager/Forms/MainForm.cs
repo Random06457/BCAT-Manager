@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -10,28 +10,39 @@ using System.Windows.Forms;
 using System.Globalization;
 using System.Media;
 using System.IO;
-using MessagePack;
-using Newtonsoft.Json;
 using System.Threading;
 using System.Diagnostics;
+using System.Resources;
+using Bcat_Manager.Properties;
+using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
+using Bcat_Manager.Forms;
 
 namespace Bcat_Manager
 {
     public partial class Form1 : Form
     {
+        BcatList DataList = null;
+
+        //will be removed in the future
+        public byte[] ListCache = null;
+
+        string CurrentTopicId = BCAT.MAIN_TOPIC_ID;
+
         public Form1()
         {
             InitializeComponent();
 
+            //hackjob
             tabControl1.Location = new Point(tabControl1.Location.X, tabControl1.Location.Y + tabControl1.ItemSize.Height);
             tabControl1.ItemSize = new Size(0, 1);
             tabControl1.SizeMode = TabSizeMode.Fixed;
             tabControl1.Appearance = TabAppearance.FlatButtons;
 
             Updater.GetUpdate();
+            
+            SetCurrentTopic(BCAT.GetBcatTopic(CurrentTopicId));
         }
-
-        BcatJson DataList = null;
 
         //select pass and tid
         private void button_select_Click(object sender, EventArgs e)
@@ -52,7 +63,8 @@ namespace Bcat_Manager
             {
                 try
                 {
-                    DataList = new BcatJson(long.Parse(textBox_tid.Text, NumberStyles.HexNumber), textBox_pass.Text);
+                    ListCache = BCAT.GetRawBcatList(ulong.Parse(textBox_tid.Text, NumberStyles.HexNumber), textBox_pass.Text);
+                    DataList = MsgPack.Deserialize<BcatList>(ListCache);
 
                     treeView1.Nodes.Clear();
 
@@ -122,6 +134,20 @@ namespace Bcat_Manager
             DatabaseManager manager = new DatabaseManager();
             manager.ShowDialog();
         }
+        //settings
+        private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SettingForm form = new SettingForm();
+            form.ShowDialog();
+        }
+        //about
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AboutForm form = new AboutForm();
+            form.ShowDialog();
+        }
+
+
 
         //show info
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
@@ -176,12 +202,12 @@ namespace Bcat_Manager
                 {
                     case 0: //root
                         contextMenuStrip1.Items[0].Visible = true; //download
-                        contextMenuStrip1.Items[1].Visible = true; //add folder
+                        contextMenuStrip1.Items[1].Visible = false; //add folder (temporarily false)
                         contextMenuStrip1.Items[4].Visible = true; //export
                         break;
                     case 1: //directory
                         contextMenuStrip1.Items[0].Visible = true; //download
-                        contextMenuStrip1.Items[2].Visible = true; //add file
+                        contextMenuStrip1.Items[2].Visible = false; //add file (temporarily false)
                         contextMenuStrip1.Items[3].Visible = true; //remove
                         break;
                     case 2: //file
@@ -211,12 +237,12 @@ namespace Bcat_Manager
         //add folder
         private void addFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            DataList.directories.Add(new BcatJson.DirectoryEntry());
+            DataList.directories.Add(new BcatList.DirectoryEntry());
             var dir = DataList.directories.Last();
 
             //some default values
             dir.by_country_group = false;
-            dir.data_list = new List<BcatJson.DirectoryEntry.DataEntry>();
+            dir.data_list = new List<BcatList.DirectoryEntry.DataEntry>();
             dir.digest = "00000000000000000000000000000000";
             dir.mode = "async";
             dir.name = "untitled";
@@ -230,7 +256,7 @@ namespace Bcat_Manager
         {
             var sel = treeView1.SelectedNode;
 
-            DataList.directories[sel.Index].data_list.Add(new BcatJson.DirectoryEntry.DataEntry());
+            DataList.directories[sel.Index].data_list.Add(new BcatList.DirectoryEntry.DataEntry());
             var file = DataList.directories[sel.Index].data_list.Last();
 
             //some default values
@@ -318,8 +344,8 @@ namespace Bcat_Manager
                     }));
 
                     byte[] data = (decrypt)
-                        ? BCAT.GetDecBcat(file.url, long.Parse(tid, NumberStyles.HexNumber), pass)
-                        : BCAT.GetRawBcat(file.url);
+                        ? BCAT.GetDecBcat(file.url, BCAT.Module.nnBcat, ulong.Parse(tid, NumberStyles.HexNumber), pass)
+                        : BCAT.GetRawBcat(file.url, BCAT.Module.nnBcat);
 
                     File.WriteAllBytes(saveFileDialog1.FileName, data);
 
@@ -341,7 +367,7 @@ namespace Bcat_Manager
             FolderSelectDialog fbox = new FolderSelectDialog();
             if (fbox.ShowDialog() == DialogResult.OK)
             {
-                string dirPath = String.Format(@"{0}\{1}\", fbox.SelectedPath, dir.name);
+                string dirPath = $@"{fbox.SelectedPath}\{dir.name}\";
 
                 //create folder if doesn't exist
                 if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
@@ -357,8 +383,8 @@ namespace Bcat_Manager
                     {
                         string filePath = dirPath + file.filename;
                         byte[] data = (decrypt)
-                        ? BCAT.GetDecBcat(file.url, long.Parse(tid, NumberStyles.HexNumber), pass)
-                        : BCAT.GetRawBcat(file.url);
+                        ? BCAT.GetDecBcat(file.url, BCAT.Module.nnBcat, ulong.Parse(tid, NumberStyles.HexNumber), pass)
+                        : BCAT.GetRawBcat(file.url, BCAT.Module.nnBcat);
 
                         File.WriteAllBytes(filePath, data);
                     }
@@ -379,7 +405,7 @@ namespace Bcat_Manager
             FolderSelectDialog fbox = new FolderSelectDialog();
             if (fbox.ShowDialog() == DialogResult.OK)
             {
-                string rootPath = String.Format(@"{0}\{1}\", fbox.SelectedPath, DataList.topic_id);
+                string rootPath = $@"{fbox.SelectedPath}\{DataList.topic_id}\";
 
                 //create folder if doesn't exist
                 if (!Directory.Exists(rootPath)) Directory.CreateDirectory(rootPath);
@@ -393,7 +419,7 @@ namespace Bcat_Manager
 
                     foreach (var dir in DataList.directories)
                     {
-                        string dirPath = String.Format(@"{0}\{1}\", rootPath, dir.name);
+                        string dirPath = $@"{rootPath}\{dir.name}\";
 
                         //create folder if doesn't exist
                         if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
@@ -402,8 +428,8 @@ namespace Bcat_Manager
                         {
                             string filePath = dirPath + file.filename;
                             byte[] data = (decrypt)
-                                ? BCAT.GetDecBcat(file.url, long.Parse(tid, NumberStyles.HexNumber), pass)
-                                : BCAT.GetRawBcat(file.url);
+                                ? BCAT.GetDecBcat(file.url, BCAT.Module.nnBcat, ulong.Parse(tid, NumberStyles.HexNumber), pass)
+                                : BCAT.GetRawBcat(file.url, BCAT.Module.nnBcat);
 
                             File.WriteAllBytes(filePath, data);
                         }
@@ -438,19 +464,14 @@ namespace Bcat_Manager
             saveFileDialog1.FileName = DataList.topic_id;
             if (saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
-                File.WriteAllBytes(saveFileDialog1.FileName, DataList.GetMsgPack());
+                File.WriteAllBytes(saveFileDialog1.FileName, ListCache);
+                SystemSounds.Asterisk.Play();
+                //File.WriteAllBytes(saveFileDialog1.FileName, DataList.GetMsgPack());
             }
         }
         private void encryptedToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EncryptForm form = new EncryptForm(DataList);
-            form.ShowDialog();
-        }
-
-        //about
-        private void linkLabel_credits_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            AboutForm form = new AboutForm();
+            EncryptForm form = new EncryptForm(ListCache);
             form.ShowDialog();
         }
 
@@ -458,6 +479,86 @@ namespace Bcat_Manager
         private void linkLabel_infoPass_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Process.Start("https://github.com/Random0666/BCAT-Manager/blob/master/passphrases.md");
+        }
+
+        private void button_refreshNews_Click(object sender, EventArgs e)
+        {
+            Thread t = new Thread(() =>
+            {
+                Invoke(new Action(() =>
+                {
+                    flowLayoutPanel1.Enabled = false;
+                    button_clearNewsCache.Enabled = false;
+                    button_chooseTopic.Enabled = false;
+                    button_refreshNews.Enabled = false;
+                    progressBar1.Visible = true;
+                    label_newsProg.Visible = true;
+                }));
+
+                var newsdata = NewsCache.RefreshNews(CurrentTopicId, progressBar1, label_newsProg);
+
+                Invoke(new Action(() =>
+                {
+                    progressBar1.Value = 0;
+                    label_newsProg.Text = "...";
+                    button_refreshNews.Enabled = true;
+
+                    flowLayoutPanel1.SuspendLayout();
+                    flowLayoutPanel1.Controls.Clear();
+                    foreach (var data in newsdata)
+                    {
+                        TopicBox tb = new TopicBox();
+                        tb.Size = new Size(178 + 2 * tb.SelectionSize, 155 + 2 * tb.SelectionSize);
+                        tb.BackColor = SystemColors.Control;
+                        tb.TopicColor = Color.White;
+                        tb.Click += Tb_Click;
+                        tb.Topic = data;
+                        flowLayoutPanel1.Controls.Add(tb);
+                    }
+                    flowLayoutPanel1.ResumeLayout();
+
+                    flowLayoutPanel1.Enabled = true;
+                    button_clearNewsCache.Enabled = true;
+                    button_chooseTopic.Enabled = true;
+                    button_refreshNews.Enabled = true;
+                    progressBar1.Visible = false;
+                    label_newsProg.Visible = false;
+
+                }));
+            });
+            t.IsBackground = true;
+            t.Start();
+        }
+
+        private void Tb_Click(object sender, EventArgs e)
+        {
+            foreach (TopicBox tb in flowLayoutPanel1.Controls)
+                if (tb.Selected && tb != sender)
+                    tb.Selected = false;
+
+            if (sender.GetType() == typeof(TopicBox))
+                ((TopicBox)sender).Selected = true;
+        }
+        
+        private void SetCurrentTopic(BcatTopic topic)
+        {
+            CurrentTopicId = topic.Details.topic_id;
+            pictureBox_topicIcon.Image = topic.Icon;
+            textBox_topicDesc.Text = topic.Details.description;
+        }
+
+        private void button_clearNewsCache_Click(object sender, EventArgs e)
+        {
+            NewsCache.ClearCache();
+        }
+
+        private void button_chooseTopic_Click(object sender, EventArgs e)
+        {
+            CatalogForm form = new CatalogForm();
+            if (form.ShowDialog() == DialogResult.OK)
+            {
+                SetCurrentTopic(form.SelectedTopic);
+            }
         }
     }
 }

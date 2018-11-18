@@ -11,21 +11,19 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using MessagePack;
-using Newtonsoft.Json;
 
 namespace Bcat_Manager
 {
     public partial class EncryptForm : Form
     {
-        private BcatJson DataList;
-        private bool IsList;
+        private byte[] RawBuffer;
+        private bool CalledWithBuffer;
         private byte[] Signature = new byte[0x100];
 
-        private EncryptForm(bool islist, BcatJson list)
+        private EncryptForm(bool calledWidthBuffer, byte[] data)
         {
-            IsList = islist;
-            DataList = list;
+            CalledWithBuffer = calledWidthBuffer;
+            RawBuffer = data;
 
             InitializeComponent();
 
@@ -33,14 +31,14 @@ namespace Bcat_Manager
             comboBox_crypto.SelectedIndex = 2;
             comboBox_sha.SelectedIndex = 1;
 
-            if (IsList)
+            if (CalledWithBuffer)
             {
                 textBox_path.Visible = false;
                 button2.Visible = false;
             }
         }
         public EncryptForm() : this(false, null) { }
-        public EncryptForm(BcatJson list) : this(true, list) { }
+        public EncryptForm(byte[] data) : this(true, data) { }
 
         //select tid and pass from database
         private void button_select_Click(object sender, EventArgs e)
@@ -85,7 +83,7 @@ namespace Bcat_Manager
 
         private void button_save_Click(object sender, EventArgs e)
         {
-            if (!File.Exists(textBox_path.Text) && !IsList)
+            if (!File.Exists(textBox_path.Text) && !CalledWithBuffer)
             {
                 MessageBox.Show("Input file \"" + textBox_path.Text + "\" does not exist.");
                 return;
@@ -98,14 +96,14 @@ namespace Bcat_Manager
                     //disable contols
                     foreach (Control control in Controls) Invoke(new Action(() => control.Enabled = false));
 
-                    byte[] data = (IsList)
-                    ? DataList.GetMsgPack()
+                    byte[] data = (CalledWithBuffer)
+                    ? RawBuffer
                     : File.ReadAllBytes(textBox_path.Text);
 
                     byte crypto = 0, hashType = 0;
                     Invoke(new Action(() => crypto = (byte)(comboBox_crypto.SelectedIndex +1)));
                     Invoke(new Action(() => hashType = (byte)comboBox_sha.SelectedIndex));
-                    byte[] enc = BCAT.EncryptBCAT(data, long.Parse(textBox_tid.Text, NumberStyles.HexNumber), textBox_pass.Text, hashType, crypto, Signature);
+                    byte[] enc = BCAT.EncryptBCAT(data, ulong.Parse(textBox_tid.Text, NumberStyles.HexNumber), textBox_pass.Text, hashType, crypto, Signature);
 
                     File.WriteAllBytes(saveFileDialog1.FileName, enc);
                     SystemSounds.Asterisk.Play();
