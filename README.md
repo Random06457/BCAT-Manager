@@ -4,7 +4,7 @@ A GUI to download/parse bcat data from your games.<br><br>
 <img src="https://raw.githubusercontent.com/Random0666/Useless-stuff/master/BCAT-Manager/images/bcat.png" width="270" height="240" />
 </p>
 <img src="https://raw.githubusercontent.com/Random0666/Useless-stuff/master/BCAT-Manager/images/app.png"  width="280" height="290"/>
-<img src="https://raw.githubusercontent.com/Random0666/Useless-stuff/master/BCAT-Manager/images/news.png"  width="310" height="290"/>
+<img src="https://raw.githubusercontent.com/Random0666/Useless-stuff/master/BCAT-Manager/images/news.png"  width="280" height="260"/>
 <img src="https://raw.githubusercontent.com/Random0666/Useless-stuff/master/BCAT-Manager/images/encrypt.png"  width="280" height="290"/>
 
 ### Usage
