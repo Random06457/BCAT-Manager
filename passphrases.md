@@ -16,4 +16,4 @@ Once done, on your SD card you'll have the extracted "control" data at `<nro fol
 
 So now, to get your passphrase, you have to open the control.nacp file from your extracted title's "control" data with any hex editor, go to offset 0x3100 and copy your 0x40 bytes long passphrase **as a string**.<img src="https://raw.githubusercontent.com/Random0666/Useless-stuff/master/BCAT-Manager/images/nacp.png"/>
 
-___Note : If the passphrase is only a bunch of 0s, thats probably means that your title doesn't use bcat___ 
+___Note : If the passphrase is only a bunch of 0s, it probably means that your title doesn't use bcat___ 
